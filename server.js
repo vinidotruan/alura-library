@@ -1,17 +1,7 @@
-const http = require('http');
-const port = 3000;
+import app from './src/app.js';
 
-const routes = {
-    '/': 'Nodes courses',
-    '/books': 'List of books',
-    '/authors': 'List of authors',
-    '/contact': 'Contact us',
-}
-const server = http.createServer((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end(routes[req.url] || '404 - Not Found');
-});
+const port = process.env.PORT|| 3000;
 
-server.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}/`);
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
