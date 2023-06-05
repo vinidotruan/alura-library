@@ -1,7 +1,8 @@
 import express from "express";
-import books from "./models/Book.js";
 import routes from "./routes/index.js";
 import db from "./config/db-connection.js";
+import mongoose from "mongoose";
+import errorHandler from "./middlewares/error-handler.js";
 
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
@@ -10,4 +11,6 @@ db.once("open", () => {
 const app = express();
 app.use(express.json());
 routes(app);
+
+app.use(errorHandler);
 export default app;
