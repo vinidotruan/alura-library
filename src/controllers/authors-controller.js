@@ -1,6 +1,5 @@
-import authors from "../models/Author.js";
-import Author from "../models/Author.js";
-import mongoose from "mongoose";
+import { authors } from "../models/index.js";
+import NotFound from "../errors/NotFound.js";
 
 class AuthorsController {
   static all = async (req, res, next) => {
@@ -13,10 +12,10 @@ class AuthorsController {
   };
 
   static create = async (req, res, next) => {
-    const author = new Author(req.body);
+    const author = req.body;
 
     try {
-      await author.save();
+      await authors.create(author);
       res.status(201).json({ message: "Author added", data: author });
     } catch (error) {
       next(error);
@@ -52,7 +51,7 @@ class AuthorsController {
       const author = await authors.findById(id);
 
       if (author === null) {
-        res.status(404).json({ message: "Author not found" });
+        next(new NotFound("Author not found"));
       }
       res.status(200).json({ data: author });
     } catch (error) {

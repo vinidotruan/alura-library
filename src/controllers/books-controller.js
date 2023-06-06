@@ -1,5 +1,4 @@
-import books from "../models/Book.js";
-import Book from "../models/Book.js";
+import { books } from "../models/index.js";
 
 class BooksController {
   static all = async (req, res, next) => {
@@ -12,7 +11,7 @@ class BooksController {
   };
 
   static create = async (req, res, next) => {
-    const book = new Book(req.body);
+    const book = await books.create(req.body);
 
     try {
       await book.save();
