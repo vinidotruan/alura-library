@@ -17,6 +17,10 @@ const errorHandler = (err, req, res, next) => {
     err.sendResponse(res);
   }
 
+  if (err instanceof ErrorBase) {
+    err.sendResponse(res);
+  }
+
   new ErrorBase().sendResponse(res);
 };
 

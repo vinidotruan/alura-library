@@ -1,9 +1,22 @@
 import { authors, books } from "../models/index.js";
+import WrongRequest from "../errors/WrongRequest.js";
 
 class BooksController {
   static all = async (req, res, next) => {
     try {
-      const booksResponse = await books.find().populate("author").exec();
+      const { limit = 5, page = 1, orderBy = "_id", asc = 1 } = req.query;
+
+      if (+limit < 1 || +page < 1) {
+        next(new WrongRequest("Limit and page must be greater than 0"));
+      }
+
+      const booksResponse = await books
+        .find()
+        .sort({ [orderBy]: asc })
+        .skip((+page - 1) * +limit)
+        .limit(+limit)
+        .populate("author")
+        .exec();
       res.status(200).json({ data: booksResponse });
     } catch (error) {
       next(error);
