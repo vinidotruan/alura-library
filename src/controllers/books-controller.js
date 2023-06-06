@@ -1,4 +1,4 @@
-import { books } from "../models/index.js";
+import { authors, books } from "../models/index.js";
 
 class BooksController {
   static all = async (req, res, next) => {
@@ -43,11 +43,14 @@ class BooksController {
     }
   };
 
-  static findByPublisher = async (req, res, next) => {
-    const publisher = req.query.publisher;
+  static filter = async (req, res, next) => {
+    const filters = {};
 
+    for (const key in req.query) {
+      filters[key] = { $regex: req.query[key], $options: "i" };
+    }
     try {
-      const booksResponse = await books.find({ publisher: publisher });
+      const booksResponse = await books.find(filters);
       res.status(200).json({ data: booksResponse });
     } catch (error) {
       next(error);
