@@ -4,8 +4,8 @@ import NotFound from "../errors/NotFound.js";
 class AuthorsController {
   static all = async (req, res, next) => {
     try {
-      const authorsResponse = await authors.find();
-      res.status(200).json({ data: authorsResponse });
+      req.response = authors.find();
+      next();
     } catch (error) {
       next(error);
     }

@@ -4,20 +4,8 @@ import WrongRequest from "../errors/WrongRequest.js";
 class BooksController {
   static all = async (req, res, next) => {
     try {
-      const { limit = 5, page = 1, orderBy = "_id", asc = 1 } = req.query;
-
-      if (+limit < 1 || +page < 1) {
-        next(new WrongRequest("Limit and page must be greater than 0"));
-      }
-
-      const booksResponse = await books
-        .find()
-        .sort({ [orderBy]: asc })
-        .skip((+page - 1) * +limit)
-        .limit(+limit)
-        .populate("author")
-        .exec();
-      res.status(200).json({ data: booksResponse });
+      req.response = books.find();
+      next();
     } catch (error) {
       next(error);
     }
@@ -25,7 +13,6 @@ class BooksController {
 
   static create = async (req, res, next) => {
     const book = await books.create(req.body);
-
     try {
       await book.save();
       res.status(201).json({ message: "Book added", data: book });
